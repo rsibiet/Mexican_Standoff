@@ -1,0 +1,112 @@
+" **************************************************************************** "
+"                                                                              "
+"                                                         :::      ::::::::    "
+"    .vimrc                                             :+:      :+:    :+:    "
+"                                                     +:+ +:+         +:+      "
+"    By: rsibiet <marvin@42.fr>                     +#+  +:+       +#+         "
+"                                                 +#+#+#+#+#+   +#+            "
+"    Created: 2015/12/05 12:38:07 by rsibiet           #+#    #+#              "
+"    Updated: 2015/12/06 16:44:20 by rsibiet          ###   ########.fr        "
+"                                                                              "
+" **************************************************************************** "
+
+set nocompatible
+set number
+filetype plugin indent on
+syntax on
+set ruler
+set mouse=a
+set background=dark
+set showfulltag
+set showmatch
+set backup
+set backupdir=~/.vim.d,.
+inoremap { {}
+inoremap ( ()
+highlight ExtraWhitespace ctermbg=yellow
+match ExtraWhitespace /\s\+$/
+
+:function s:Full_l ()
+	:return "\/* ************************************************************************** *\/"
+:endfunction
+
+	:function s:Empty_l ()
+	:return "\/*                                                                            *\/"
+:endfunction
+
+:function s:Line3 ()
+	:return "\/*                                                        :::      ::::::::   *\/"
+:endfunction
+
+:function s:Line4 ()
+	:let l:l4A = "/*   "
+	:let l:l4B = fnamemodify(bufname("%"), ':t')
+	:let l:l4C = repeat(' ', 51 - strlen(l:l4B))
+	:let l:l4D = ":+:      :+:    :+:   */"
+	:return l:l4A . l:l4B . l:l4C . l:l4D
+:endfunction
+
+:function s:Line5 ()
+	:return "\/*                                                    +:+ +:+         +:+     *\/"
+:endfunction
+
+:function s:Line6 ()
+	:let l:l6A = "/*   By: "
+	:let l:l6B = $USER
+	:let l:l6C = " <"
+	:let l:l6D = $MAIL
+	:if strlen(l:l6D) == 0
+		:let l:l6D = "marvin@42.fr"
+	:endif
+	:let l:l6E = ">"
+	:let l:l6F = repeat(' ', 40 - strlen(l:l6B) - strlen(l:l6D))
+	:let l:l6G = "+#+  +:+       +#+        *\/"
+	:return l:l6A . l:l6B . l:l6C . l:l6D . l:l6E . l:l6F . l:l6G
+:endfunction
+
+:function s:Line7 ()
+	:return "\/*                                                +#+#+#+#+#+   +#+           *\/"
+:endfunction
+
+:function s:Line8 ()
+	:let l:l8A = "/*   Created: "
+	:let l:l8B = strftime("%Y/%m/%d %H:%M:%S")
+	:let l:l8C = " by "
+	:let l:l8D = $USER
+	:let l:l8E = repeat(' ', 37 - strlen(l:l8B) - strlen(l:l8D))
+	:let l:l8F = "#+#    #+#             */"
+	:return l:l8A . l:l8B . l:l8C . l:l8D . l:l8E . l:l8F
+:endfunction
+
+:function s:Line9 ()
+	:let l:l9A = "/*   Updated: "
+	:let l:l9B = strftime("%Y/%m/%d %H:%M:%S")
+	:let l:l9C = " by "
+	:let l:l9D = $USER
+	:let l:l9E = repeat(' ', 36 - strlen(l:l9B) - strlen(l:l9D))
+	:let l:l9F = "###   ########.fr       */"
+	:return l:l9A . l:l9B . l:l9C . l:l9D . l:l9E . l:l9F
+:endfunction
+
+:function s:DpHeader ()
+	:if match(getline(9), "/*   Updated:") == -1
+
+		:call append (0, s:Full_l())
+		:call append (1, s:Empty_l())
+		:call append (2, s:Line3())
+		:call append (3, s:Line4())
+		:call append (4, s:Line5())
+		:call append (5, s:Line6())
+		:call append (6, s:Line7())
+		:call append (7, s:Line8())
+		:call append (8, s:Line9())
+		:call append (9, s:Empty_l())
+		:call append (10, s:Full_l())
+		:call append (11, "")
+
+	:endif
+:endfunction
+
+:command  Header call s:DpHeader ()
+:nmap <c-c><c-h> :Header<CR>
+:autocmd BufWritePre * call s:Line9 ()
